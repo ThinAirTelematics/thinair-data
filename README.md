@@ -11,7 +11,7 @@ ThinAir Data is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io
 
 - **Multi-database** — PostgreSQL, MySQL, SQL Server
 - **Secure** — OAuth 2.1 + API key auth, query sandboxing
-- **Fast** — Cloudflare edge, Hyperdrive connection pooling
+- **Fast** — Low-latency edge infrastructure with connection pooling
 - **AI-ready** — Schema introspection, natural language to SQL
 
 ## Tools
@@ -95,12 +95,9 @@ Once connected, ask your AI:
 - *"List all open maintenance tickets ordered by priority"*
 - *"How many active drivers do we have per region?"*
 
-## Infrastructure
+## npm Package
 
-- **Platform**: Cloudflare Workers + Hyperdrive
-- **Connection Pooling**: Cloudflare Hyperdrive for low-latency database access
-- **Auth**: OAuth 2.1 + API key
-- **Security**: Query sandboxing, read-only mode available
+[npmjs.com/package/thinair-data](https://www.npmjs.com/package/thinair-data)
 
 ## Get an API Key
 
