@@ -2,7 +2,7 @@
 
 Connect your AI assistant to any **PostgreSQL, MySQL, or SQL Server** database in 60 seconds via MCP.
 
-[![npm version](https://img.shields.io/npm/v/thinair-data)](https://www.npmjs.com/package/thinair-data)
+[![npm version](https://img.shields.io/npm/v/@thinairtelematics/data)](https://www.npmjs.com/package/@thinairtelematics/data)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 ## What It Does
@@ -35,7 +35,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
   "mcpServers": {
     "thinair-data": {
       "command": "npx",
-      "args": ["thinair-data"],
+      "args": ["-y", "@thinairtelematics/data"],
       "env": {
         "THINAIR_API_KEY": "your-api-key",
         "DATABASE_URL": "postgresql://user:pass@host:5432/dbname"
@@ -52,7 +52,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
   "mcpServers": {
     "thinair-data": {
       "command": "npx",
-      "args": ["thinair-data"],
+      "args": ["-y", "@thinairtelematics/data"],
       "env": {
         "THINAIR_API_KEY": "your-api-key",
         "DATABASE_URL": "postgresql://user:pass@host:5432/dbname"
@@ -90,14 +90,14 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
 Once connected, ask your AI:
 
-- *"Show me all vehicles that haven't pinged in the last 24 hours"*
+- *"Show me all vehicles that haven’t pinged in the last 24 hours"*
 - *"What are the top 10 routes by mileage this month?"*
 - *"List all open maintenance tickets ordered by priority"*
 - *"How many active drivers do we have per region?"*
 
 ## npm Package
 
-[npmjs.com/package/thinair-data](https://www.npmjs.com/package/thinair-data)
+[npmjs.com/package/@thinairtelematics/data](https://www.npmjs.com/package/@thinairtelematics/data)
 
 ## Get an API Key
 
