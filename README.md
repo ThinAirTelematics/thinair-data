@@ -14,6 +14,13 @@ ThinAir Data is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io
 - **Fast** — Low-latency edge infrastructure with connection pooling
 - **AI-ready** — Schema introspection, natural language to SQL
 
+## Product Links
+
+- **Main:** https://data.thinair.co
+- **Connect a database:** https://data.thinair.co/connect
+- **Docs:** https://data.thinair.co/docs/getting-started
+- **Pricing:** https://data.thinair.co/checkout
+
 ## Tools
 
 | Tool | Description |
@@ -99,9 +106,7 @@ Once connected, ask your AI:
 
 [npmjs.com/package/@thinairtelematics/data](https://www.npmjs.com/package/@thinairtelematics/data)
 
-## Get an API Key
-
-Sign up at [thinair.co](https://thinair.co) to get your free API key.
+> Previously published as `thinair-data` (now deprecated in favor of the scoped package).
 
 ## License
 
