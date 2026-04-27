@@ -53,21 +53,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          # Intentionally NOT setting registry-url — it writes
-          # `_authToken=${NODE_AUTH_TOKEN}` into a userconfig .npmrc, which
-          # shadows OIDC-based publish under Trusted Publisher. We write
-          # our own .npmrc below with no token line.
+          # Do NOT set registry-url — setup-node would inject a userconfig
+          # .npmrc containing `_authToken=${NODE_AUTH_TOKEN}` that shadows
+          # OIDC publish via Trusted Publisher. We pass our own clean
+          # token-less .npmrc to `npm publish` below.
 
       - name: Upgrade npm (Trusted Publisher OIDC auto-auth needs npm 11.5+)
-        run: |
-          npm install -g npm@latest
-          npm --version
-
-      - name: Inspect OIDC token claims (debug)
-        run: |
-          curl -fsSL -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=npm:registry.npmjs.org" \
-            | python3 -c "import sys,json,base64;t=json.load(sys.stdin)[\"value\"];p=t.split(\".\")[1]+\"==\";c=json.loads(base64.urlsafe_b64decode(p));print(json.dumps({k:c[k] for k in (\"repository\",\"workflow\",\"workflow_ref\",\"environment\",\"ref\",\"event_name\",\"sub\")},indent=2))"
+        run: npm install -g npm@latest
 
       - name: Verify package + server versions match
         run: |
@@ -80,14 +72,7 @@ jobs:
 
       - name: Publish to npm (with provenance, OIDC via Trusted Publisher)
         run: |
-          # Token-less .npmrc forces OIDC auth via the package's npm
-          # Trusted Publisher binding (no _authToken line at all).
-          cat > /tmp/oidc.npmrc <<'EOF'
-          registry=https://registry.npmjs.org/
-          EOF
-          # Diagnostic: confirm no token is leaking via env into npm.
-          echo "NODE_AUTH_TOKEN length: ${#NODE_AUTH_TOKEN}"
-          echo "userconfig in use: /tmp/oidc.npmrc"
+          printf 'registry=https://registry.npmjs.org/\n' > /tmp/oidc.npmrc
           npm publish --provenance --access public --userconfig=/tmp/oidc.npmrc
 
       - name: Install mcp-publisher
