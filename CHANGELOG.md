@@ -6,6 +6,12 @@ and the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format.
 
 ## [Unreleased]
 
+## [2.0.5] — 2026-04-26
+
+### Added
+- `repository` field in package.json pointing at https://github.com/ThinAirTelematics/thinair-data — npmjs.com now surfaces a "Repository" link to this public release source.
+
+
 ## [2.0.4] — 2026-04-26
 
 ### Changed

@@ -1,7 +1,11 @@
 {
   "name": "@thinairtelematics/data",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "mcpName": "co.thinair/data",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThinAirTelematics/thinair-data.git"
+  },
   "publishConfig": {
     "access": "public"
   },

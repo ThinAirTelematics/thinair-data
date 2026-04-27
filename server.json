@@ -3,7 +3,7 @@
   "name": "co.thinair/data",
   "description": "Read-only PostgreSQL, MySQL, SQL Server access via MCP \u2014 24 dialect-aware hosted tools.",
   "websiteUrl": "https://data.thinair.co",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "remotes": [
     {
       "type": "streamable-http",
