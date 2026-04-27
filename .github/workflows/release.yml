@@ -1,0 +1,91 @@
+# Release pipeline for thinair-data (the npm package @thinairtelematics/data).
+#
+# Triggered by pushing a `v*` tag (e.g. `v2.0.4`).
+#
+# Workflow:
+#   1. npm publish with --provenance — generates a Sigstore attestation
+#      linking the tarball to this commit + workflow. Surfaces as a green
+#      "Provenance" badge on https://www.npmjs.com/package/@thinairtelematics/data
+#   2. mcp-publisher publish — pushes server.json to the official MCP Registry
+#      under the co.thinair/data namespace via DNS-based auth.
+#
+# One-time setup:
+#   - https://www.npmjs.com/package/@thinairtelematics/data/access
+#       Add Trusted Publisher → GitHub Actions
+#         org/user:           ThinAirTelematics
+#         repository:         thinair-data
+#         workflow filename:  release.yml
+#         environment:        Production
+#   - Repo Settings → Secrets and variables → Actions → New environment secret
+#       Environment name:  Production
+#       Name:              MCP_DNS_PRIVATE_KEY
+#       Value:             <hex-encoded ed25519 private key paired with the
+#                          TXT record on thinair.co apex>
+
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to release (e.g. v2.0.4) — must already exist."
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  release:
+    name: Publish to npm + MCP Registry
+    runs-on: ubuntu-latest
+    environment: Production
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Verify package + server versions match
+        run: |
+          PKG=$(node -p "require('./package.json').version")
+          SRV=$(node -p "require('./server.json').version")
+          if [ "$PKG" != "$SRV" ]; then
+            echo "::error::package.json (v$PKG) and server.json (v$SRV) disagree"
+            exit 1
+          fi
+
+      - name: Publish to npm (with provenance)
+        run: npm publish --provenance --access public
+
+      - name: Install mcp-publisher
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" \
+            | tar xz mcp-publisher
+          sudo mv mcp-publisher /usr/local/bin/
+
+      - name: Login + publish to MCP Registry
+        env:
+          MCP_DNS_PRIVATE_KEY: ${{ secrets.MCP_DNS_PRIVATE_KEY }}
+        run: |
+          if [ -z "$MCP_DNS_PRIVATE_KEY" ]; then
+            echo "::error::MCP_DNS_PRIVATE_KEY secret missing in Production environment"
+            exit 1
+          fi
+          mcp-publisher login dns --domain thinair.co --private-key "$MCP_DNS_PRIVATE_KEY"
+          mcp-publisher publish
+
+      - name: Summary
+        run: |
+          echo "## Release summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "- npm: https://www.npmjs.com/package/@thinairtelematics/data" >> "$GITHUB_STEP_SUMMARY"
+          echo "- MCP Registry: https://registry.modelcontextprotocol.io/v0/servers?name=co.thinair/data" >> "$GITHUB_STEP_SUMMARY"
