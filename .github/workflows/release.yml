@@ -53,7 +53,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          registry-url: "https://registry.npmjs.org"
+          # Intentionally NOT setting registry-url — it writes
+          # `_authToken=${NODE_AUTH_TOKEN}` into a userconfig .npmrc, which
+          # shadows OIDC-based publish under Trusted Publisher. We write
+          # our own .npmrc below with no token line.
 
       - name: Inspect OIDC token claims (debug)
         run: |
@@ -70,8 +73,17 @@ jobs:
             exit 1
           fi
 
-      - name: Publish to npm (with provenance)
-        run: npm publish --provenance --access public
+      - name: Publish to npm (with provenance, OIDC via Trusted Publisher)
+        run: |
+          # Token-less .npmrc forces OIDC auth via the package's npm
+          # Trusted Publisher binding (no _authToken line at all).
+          cat > /tmp/oidc.npmrc <<'EOF'
+          registry=https://registry.npmjs.org/
+          EOF
+          # Diagnostic: confirm no token is leaking via env into npm.
+          echo "NODE_AUTH_TOKEN length: ${#NODE_AUTH_TOKEN}"
+          echo "userconfig in use: /tmp/oidc.npmrc"
+          npm publish --provenance --access public --userconfig=/tmp/oidc.npmrc
 
       - name: Install mcp-publisher
         run: |
