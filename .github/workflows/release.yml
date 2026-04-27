@@ -58,6 +58,11 @@ jobs:
           # shadows OIDC-based publish under Trusted Publisher. We write
           # our own .npmrc below with no token line.
 
+      - name: Upgrade npm (Trusted Publisher OIDC auto-auth needs npm 11.5+)
+        run: |
+          npm install -g npm@latest
+          npm --version
+
       - name: Inspect OIDC token claims (debug)
         run: |
           curl -fsSL -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
