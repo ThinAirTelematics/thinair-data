@@ -1,6 +1,6 @@
 {
   "name": "@thinairtelematics/data",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "mcpName": "co.thinair/data",
   "repository": {
     "type": "git",
@@ -30,7 +30,8 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "thinair-data": "bin/start.js"
+    "thinair-data": "bin/start.js",
+    "thinair-data-server": "bin/server.js"
   },
   "files": [
     "bin/",
@@ -39,5 +40,8 @@
   ],
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
   }
 }
