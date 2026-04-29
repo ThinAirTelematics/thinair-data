@@ -7,12 +7,12 @@ Connect your AI assistant to any **PostgreSQL, MySQL, or SQL Server** database i
 
 ## What It Does
 
-ThinAir Data is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server that gives AI agents secure, read/write access to your databases — no custom backend required.
+ThinAir Data is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server that gives AI agents secure, **read-only** access to your databases — no custom backend required. SELECT / WITH / EXPLAIN are permitted; INSERT / UPDATE / DELETE / DROP / ALTER are blocked at the query firewall.
 
 - **Multi-database** — PostgreSQL, MySQL, SQL Server
-- **Secure** — OAuth 2.1 + API key auth, query sandboxing
-- **Fast** — Low-latency edge infrastructure with connection pooling
-- **AI-ready** — Schema introspection, natural language to SQL
+- **Read-only by design** — write statements rejected before they hit your DB; safe to point any agent at production
+- **Secure** — OAuth 2.1 + API key auth, query sandboxing, per-tenant connection pooling
+- **AI-ready** — Schema introspection, dialect-aware tools, natural language to SQL
 
 ## Product Links
 
