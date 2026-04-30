@@ -4,7 +4,7 @@ Connect your AI assistant to any **PostgreSQL, MySQL, or SQL Server** database i
 
 [![npm version](https://img.shields.io/npm/v/@thinairtelematics/data)](https://www.npmjs.com/package/@thinairtelematics/data)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![smithery badge](https://smithery.ai/badge/bwakefield/thinair-data)](https://smithery.ai/servers/bwakefield/thinair-data)
+[![smithery badge](https://smithery.ai/badge/thinair/data)](https://smithery.ai/servers/thinair/data)
 
 ## What It Does
 
