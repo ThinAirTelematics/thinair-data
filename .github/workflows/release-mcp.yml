@@ -1,0 +1,99 @@
+name: Publish @thinairtelematics/data-mcp
+
+# Companion to release.yml. Publishes the small config-printer helper
+# that ships at @thinairtelematics/data-mcp from this repo's data-mcp/
+# subtree. Distinct from @thinairtelematics/data (root pkg, full MCP
+# CLI). Both packages benefit from --provenance + GitHub Actions
+# attribution because this repo is public.
+#
+# Triggers:
+#  - push to main under data-mcp/** → publish automatically
+#  - workflow_dispatch from any branch → run smoke-test + version gate;
+#    publish only when `dry_run=false` is passed (default: true).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'data-mcp/**'
+      - '.github/workflows/release-mcp.yml'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry-run (smoke-test + version gate only; do NOT push to npm)'
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  id-token: write   # required for --provenance attestation
+
+jobs:
+  publish:
+    name: npm publish
+    runs-on: ubuntu-latest
+    environment: Production
+    defaults:
+      run:
+        working-directory: data-mcp
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Smoke test — binary runs and prints help
+        run: |
+          node ./bin/start.js --help | head -20
+          node ./bin/start.js | grep -q "mcpServers"
+
+      - name: Version gate — compare local to npm registry
+        id: versions
+        run: |
+          LOCAL=$(node -p "require('./package.json').version")
+          PUBLISHED=$(npm view @thinairtelematics/data-mcp version 2>/dev/null || echo "0.0.0")
+          echo "local=$LOCAL"     >> "$GITHUB_OUTPUT"
+          echo "published=$PUBLISHED" >> "$GITHUB_OUTPUT"
+          if [ "$LOCAL" = "$PUBLISHED" ]; then
+            echo "Same version already published ($LOCAL) — skipping."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Publishing $LOCAL (latest on npm: $PUBLISHED)"
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Decide whether to publish
+        id: decide
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            if [ "${{ inputs.dry_run }}" = "true" ]; then
+              echo "Dry-run requested — will not publish."
+              echo "will_publish=false" >> "$GITHUB_OUTPUT"
+            else
+              echo "Manual dispatch with dry_run=false — will publish."
+              echo "will_publish=true" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "Push to main — will publish."
+            echo "will_publish=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish to npm
+        if: steps.versions.outputs.skip == 'false' && steps.decide.outputs.will_publish == 'true'
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Summary
+        run: |
+          echo "### @thinairtelematics/data-mcp" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Field | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Trigger | \`${{ github.event_name }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Local version | \`${{ steps.versions.outputs.local }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Registry version | \`${{ steps.versions.outputs.published }}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Would publish | \`${{ steps.decide.outputs.will_publish }}\` |" >> "$GITHUB_STEP_SUMMARY"
