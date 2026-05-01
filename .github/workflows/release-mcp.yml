@@ -1,15 +1,22 @@
 name: Publish @thinairtelematics/data-mcp
 
-# Companion to release.yml. Publishes the small config-printer helper
-# that ships at @thinairtelematics/data-mcp from this repo's data-mcp/
-# subtree. Distinct from @thinairtelematics/data (root pkg, full MCP
-# CLI). Both packages benefit from --provenance + GitHub Actions
-# attribution because this repo is public.
+# Publishes the config-printer at @thinairtelematics/data-mcp from the
+# data-mcp/ subtree. Uses Trusted Publisher OIDC for auth (no NPM_TOKEN
+# secret involved) so the npm "Published by" attribution is "GitHub
+# Actions" rather than the token owner. --provenance also generates a
+# sigstore attestation visible as a verified-build badge on npmjs.com.
+#
+# One-time setup on npmjs.com → @thinairtelematics/data-mcp → Settings
+# → Access → Trusted Publishers → Add:
+#   org/user           ThinAirTelematics
+#   repository         thinair-data
+#   workflow filename  release-mcp.yml
+#   environment        Production
 #
 # Triggers:
 #  - push to main under data-mcp/** → publish automatically
-#  - workflow_dispatch from any branch → run smoke-test + version gate;
-#    publish only when `dry_run=false` is passed (default: true).
+#  - workflow_dispatch from any branch → smoke-test + version gate;
+#    publish only when `dry_run=false` (default: true).
 
 on:
   push:
@@ -26,7 +33,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write   # required for --provenance attestation
+  id-token: write   # required for OIDC + provenance
 
 jobs:
   publish:
@@ -40,10 +47,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
-          registry-url: 'https://registry.npmjs.org'
+          # Deliberately NOT setting registry-url. setup-node would inject
+          # a userconfig .npmrc with _authToken=${NODE_AUTH_TOKEN} that
+          # shadows OIDC publish via Trusted Publisher.
+
+      - name: Upgrade npm (Trusted Publisher OIDC auto-auth needs 11.5+)
+        run: npm install -g npm@latest
 
       - name: Smoke test — binary runs and prints help
         run: |
@@ -81,11 +94,11 @@ jobs:
             echo "will_publish=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Publish to npm
+      - name: Publish to npm (Trusted Publisher OIDC + provenance)
         if: steps.versions.outputs.skip == 'false' && steps.decide.outputs.will_publish == 'true'
-        run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          printf 'registry=https://registry.npmjs.org/\n' > /tmp/oidc.npmrc
+          npm publish --provenance --access public --userconfig=/tmp/oidc.npmrc
 
       - name: Summary
         run: |
@@ -93,7 +106,6 @@ jobs:
           echo "" >> "$GITHUB_STEP_SUMMARY"
           echo "| Field | Value |" >> "$GITHUB_STEP_SUMMARY"
           echo "|---|---|" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Trigger | \`${{ github.event_name }}\` |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Local version | \`${{ steps.versions.outputs.local }}\` |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Registry version | \`${{ steps.versions.outputs.published }}\` |" >> "$GITHUB_STEP_SUMMARY"
           echo "| Would publish | \`${{ steps.decide.outputs.will_publish }}\` |" >> "$GITHUB_STEP_SUMMARY"

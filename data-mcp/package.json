@@ -1,6 +1,6 @@
 {
   "name": "@thinairtelematics/data-mcp",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "Connect your AI assistant to any PostgreSQL, MySQL, or SQL Server database in 60 seconds.",
   "keywords": [
     "mcp",
