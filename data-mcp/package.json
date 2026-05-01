@@ -1,0 +1,42 @@
+{
+  "name": "@thinairtelematics/data-mcp",
+  "version": "2.1.2",
+  "description": "Connect your AI assistant to any PostgreSQL, MySQL, or SQL Server database in 60 seconds.",
+  "keywords": [
+    "mcp",
+    "database",
+    "ai",
+    "claude",
+    "cursor",
+    "postgresql",
+    "mysql",
+    "sqlserver",
+    "modelcontextprotocol"
+  ],
+  "homepage": "https://data.thinair.co",
+  "bugs": {
+    "url": "https://github.com/ThinAirTelematics/thinair-data/issues",
+    "email": "support@thinair.co"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThinAirTelematics/thinair-data.git",
+    "directory": "data-mcp"
+  },
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "thinair-data-mcp": "./bin/start.js"
+  },
+  "files": [
+    "bin/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
