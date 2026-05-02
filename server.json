@@ -3,31 +3,31 @@
   "name": "co.thinair/data",
   "description": "Read-only PostgreSQL, MySQL, SQL Server access via MCP — 24 dialect-aware hosted tools.",
   "websiteUrl": "https://data.thinair.co",
-  "version": "2.1.1",
-  "configSchema": {
-    "type": "object",
-    "properties": {
-      "apiKey": {
-        "type": "string",
-        "title": "ThinAir Data API Key",
-        "description": "Get a key at https://data.thinair.co/connect (paste your database DSN, receive a ta_data_* key). Paste it here and the MCP client will send it as a Bearer header on every call."
-      }
-    }
-  },
+  "version": "2.1.2",
   "remotes": [
     {
       "type": "streamable-http",
       "url": "https://data.thinair.co/mcp",
-      "headers": {
-        "Authorization": "Bearer ${apiKey}"
-      }
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Paste `Bearer ta_data_...`. Get a key by pasting your database DSN at https://data.thinair.co/connect.",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
     },
     {
       "type": "sse",
       "url": "https://data.thinair.co/sse",
-      "headers": {
-        "Authorization": "Bearer ${apiKey}"
-      }
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Paste `Bearer ta_data_...`. Get a key by pasting your database DSN at https://data.thinair.co/connect.",
+          "isRequired": true,
+          "isSecret": true
+        }
+      ]
     }
   ]
 }
