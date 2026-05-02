@@ -81,16 +81,42 @@ jobs:
             | tar xz mcp-publisher
           sudo mv mcp-publisher /usr/local/bin/
 
-      - name: Login + publish to MCP Registry
-        env:
-          MCP_DNS_PRIVATE_KEY: ${{ secrets.MCP_DNS_PRIVATE_KEY }}
+      # mcp-publisher login github-oidc — same OIDC mechanism npm Trusted
+      # Publisher uses (id-token: write permission already granted above).
+      # No DNS keypair to maintain, no secret to rotate. Registry verifies
+      # the OIDC token came from this exact repo + workflow.
+      - name: Login + publish to MCP Registry (GitHub OIDC)
         run: |
-          if [ -z "$MCP_DNS_PRIVATE_KEY" ]; then
-            echo "::error::MCP_DNS_PRIVATE_KEY secret missing in Production environment"
-            exit 1
-          fi
-          mcp-publisher login dns --domain thinair.co --private-key "$MCP_DNS_PRIVATE_KEY"
+          mcp-publisher login github-oidc
           mcp-publisher publish
+
+      # Belt-and-suspenders: verify the registry actually serves the new
+      # version + configSchema before calling the release done.
+      - name: Verify registry served the new server.json
+        run: |
+          set -e
+          LOCAL=$(node -p "require('./server.json').version")
+          for i in 1 2 3 4 5; do
+            sleep 5
+            REG=$(curl -fsS "https://registry.modelcontextprotocol.io/v0/servers?search=co.thinair/data&limit=10" \
+              | jq -r '.servers[]? | select(.server.name == "co.thinair/data") | select(._meta["io.modelcontextprotocol.registry/official"].isLatest == true) | .server.version' \
+              | head -n1)
+            if [ "$REG" = "$LOCAL" ]; then
+              echo "registry latest = $REG (matches local $LOCAL)"
+              HAS_CFG=$(curl -fsS "https://registry.modelcontextprotocol.io/v0/servers?search=co.thinair/data&limit=10" \
+                | jq -r '.servers[]? | select(.server.name == "co.thinair/data") | select(._meta["io.modelcontextprotocol.registry/official"].isLatest == true) | (.server.configSchema // .configSchema // null)' \
+                | head -n1)
+              if [ "$HAS_CFG" = "null" ] || [ -z "$HAS_CFG" ]; then
+                echo "::error::registry has v$REG but configSchema missing — publish content lost"
+                exit 1
+              fi
+              echo "configSchema present"
+              exit 0
+            fi
+            echo "attempt $i: registry latest = '$REG', expected '$LOCAL' — retrying"
+          done
+          echo "::error::registry did not converge to v$LOCAL after 25s"
+          exit 1
 
       - name: Summary
         run: |
