@@ -81,17 +81,30 @@ jobs:
             | tar xz mcp-publisher
           sudo mv mcp-publisher /usr/local/bin/
 
-      # mcp-publisher login github-oidc — same OIDC mechanism npm Trusted
-      # Publisher uses (id-token: write permission already granted above).
-      # No DNS keypair to maintain, no secret to rotate. Registry verifies
-      # the OIDC token came from this exact repo + workflow.
-      - name: Login + publish to MCP Registry (GitHub OIDC)
+      # Schema gate: catches the v2.1.1 failure class (`headers` as object
+      # instead of array, unknown top-level fields like `configSchema`)
+      # before we ever attempt to publish. Uses the registry's own
+      # authoritative schema fetched at runtime.
+      - name: Validate server.json against registry schema
+        run: mcp-publisher validate ./server.json
+
+      # DNS auth: the co.thinair/* namespace at registry.modelcontextprotocol.io
+      # is bound to DNS-based identity (TXT record on thinair.co apex with the
+      # ed25519 public key). GitHub OIDC was tried in v2.1.1 — registry
+      # responded 403 because OIDC's identity is io.github.ThinAirTelematics/*,
+      # not co.thinair/*. Sticking with DNS preserves the brand namespace.
+      - name: Login + publish to MCP Registry (DNS auth)
+        env:
+          MCP_DNS_PRIVATE_KEY: ${{ secrets.MCP_DNS_PRIVATE_KEY }}
         run: |
-          mcp-publisher login github-oidc
+          mcp-publisher login dns -domain thinair.co -private-key "$MCP_DNS_PRIVATE_KEY"
           mcp-publisher publish
 
       # Belt-and-suspenders: verify the registry actually serves the new
-      # version + configSchema before calling the release done.
+      # version. Failing here catches "publish appeared to succeed but
+      # the registry still returns stale metadata" cases (cache propagation
+      # hiccups, partial writes). The release isn't done until Smithery and
+      # other directory pullers can see the updated metadata.
       - name: Verify registry served the new server.json
         run: |
           set -e
@@ -103,14 +116,6 @@ jobs:
               | head -n1)
             if [ "$REG" = "$LOCAL" ]; then
               echo "registry latest = $REG (matches local $LOCAL)"
-              HAS_CFG=$(curl -fsS "https://registry.modelcontextprotocol.io/v0/servers?search=co.thinair/data&limit=10" \
-                | jq -r '.servers[]? | select(.server.name == "co.thinair/data") | select(._meta["io.modelcontextprotocol.registry/official"].isLatest == true) | (.server.configSchema // .configSchema // null)' \
-                | head -n1)
-              if [ "$HAS_CFG" = "null" ] || [ -z "$HAS_CFG" ]; then
-                echo "::error::registry has v$REG but configSchema missing — publish content lost"
-                exit 1
-              fi
-              echo "configSchema present"
               exit 0
             fi
             echo "attempt $i: registry latest = '$REG', expected '$LOCAL' — retrying"
