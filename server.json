@@ -1,17 +1,33 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "co.thinair/data",
-  "description": "Read-only PostgreSQL, MySQL, SQL Server access via MCP \u2014 24 dialect-aware hosted tools.",
+  "description": "Read-only PostgreSQL, MySQL, SQL Server access via MCP — 24 dialect-aware hosted tools.",
   "websiteUrl": "https://data.thinair.co",
-  "version": "2.0.6",
+  "version": "2.1.0",
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "apiKey": {
+        "type": "string",
+        "title": "ThinAir Data API Key",
+        "description": "Get a key at https://data.thinair.co/connect (paste your database DSN, receive a ta_data_* key). Paste it here and the MCP client will send it as a Bearer header on every call."
+      }
+    }
+  },
   "remotes": [
     {
       "type": "streamable-http",
-      "url": "https://data.thinair.co/mcp"
+      "url": "https://data.thinair.co/mcp",
+      "headers": {
+        "Authorization": "Bearer ${apiKey}"
+      }
     },
     {
       "type": "sse",
-      "url": "https://data.thinair.co/sse"
+      "url": "https://data.thinair.co/sse",
+      "headers": {
+        "Authorization": "Bearer ${apiKey}"
+      }
     }
   ]
 }
