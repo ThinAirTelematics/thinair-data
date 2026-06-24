@@ -2,26 +2,47 @@
 
 **The only MCP database server for PostgreSQL, MySQL, and SQL Server in one session** — 23 dialect-aware tools across 4 tiers, from schema introspection to cross-database compare, query firewall, PII scanning, and N+1 detection. Read-only by design.
 
+**23 read-only tools** · PostgreSQL · MySQL · SQL Server · Schema discovery, profiling, SQL safety, anomaly detection
+
 [![npm version](https://img.shields.io/npm/v/@thinairtelematics/data)](https://www.npmjs.com/package/@thinairtelematics/data)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![smithery badge](https://smithery.ai/badge/thinair/data)](https://smithery.ai/servers/thinair/data)
 
+```console
+> describe_schema("fleet")
+✓ 42 tables discovered · 6 high-value entities
+✓ no write permissions enabled
+> ask("Which vehicles had the most idle time last week?")
+✓ generated safe read-only SQL · returned 10 rows · flagged 3 exceptions
+```
+
+## Part of ThinAir
+
+ThinAir Data is part of the ThinAir platform for fleet visibility, analytics, operational search, reporting, and AI-assisted decision support.
+
+## Hosted product vs this repository
+
+- `data.thinair.co` is the hosted ThinAir product.
+- This repository is the thin public MCP package/pointer for developers and AI-agent clients.
+- Production use may require a ThinAir account, API key, OAuth connection, or hosted workspace.
+
 ## What It Does
 
-ThinAir Data is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server that gives AI agents secure, **read-only** access to your databases — no custom backend required. Three independent enforcement layers (SQL guard, session `READ ONLY`, optional per-connection custom firewall) reject `INSERT` / `UPDATE` / `DELETE` / `DROP` / `ALTER` before they hit your DB. Safe to point any agent at production.
+ThinAir Data is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io) server that gives AI agents secure, **read-only** access to your databases — no custom backend required. Designed for read-only production access when configured correctly. ThinAir Data enforces read-only behavior through SQL guards, database-session read-only mode where supported, and optional per-connection firewall rules. You should still use least-privilege database credentials and avoid exposing sensitive tables unless required.
 
 - **Multi-database** — PostgreSQL, MySQL, SQL Server in a single session. Cross-database compare with one tool call.
-- **Read-only by design** — three-layer enforcement; write statements never reach your DB.
+- **Read-only by design** — SQL guards, database-session read-only mode where supported, and optional per-connection firewall rules.
 - **Dialect-aware** — every tool understands `SELECT TOP 10` (mssql) vs `LIMIT` (others) and routes syntax correctly per connection.
 - **Tiered capability** — 23 tools across 4 tiers: schema introspection, query execution + history, EXPLAIN/optimization, anomaly detection, PII scanning, N+1 detection, query firewall, cross-DB compare.
 - **Connections are managed at runtime** — added per-tenant via the `add_connection` tool after sign-in. Never an env var or install-time config.
 
 ## Product Links
 
-- **Main:** https://data.thinair.co
+- **Product:** https://data.thinair.co
 - **Connect a database:** https://data.thinair.co/connect
 - **Docs:** https://data.thinair.co/docs/getting-started
 - **Pricing:** https://data.thinair.co/checkout
+- **ThinAir:** https://thinair.co
 
 ## Tools (selected — full list of 23 in [docs](https://data.thinair.co/docs/tools))
 
@@ -103,6 +124,10 @@ Once connected, ask your AI:
 - *"What are the top 10 slowest queries this week?"*
 - *"Scan the customers table for PII patterns"*
 - *"Which tables have the most N+1 query exposure?"*
+
+## Not for secrets
+
+Do not commit DSNs, passwords, tokens, private keys, or production credentials. Use OAuth, the hosted connection flow, or your MCP client's secret storage.
 
 ## npm Package
 
