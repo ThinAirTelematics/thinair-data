@@ -1,8 +1,8 @@
 # ThinAir Data MCP Server
 
-**The only MCP database server for PostgreSQL, MySQL, and SQL Server in one session** — 23 dialect-aware tools across 4 tiers, from schema introspection to cross-database compare, query firewall, PII scanning, and N+1 detection. Read-only by design.
+**The only MCP database server for PostgreSQL, MySQL, and SQL Server in one session** — 26 tools across 4 tiers — schema introspection, cross-database compare, query firewall, PII scanning, N+1 detection, and runtime connection management. Read-only data access by design.
 
-**23 read-only tools** · PostgreSQL · MySQL · SQL Server · Schema discovery, profiling, SQL safety, anomaly detection
+**26 tools** · PostgreSQL · MySQL · SQL Server · Read-only data access, schema discovery, profiling, SQL safety, anomaly detection
 
 [![npm version](https://img.shields.io/npm/v/@thinairtelematics/data)](https://www.npmjs.com/package/@thinairtelematics/data)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -33,7 +33,7 @@ ThinAir Data is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io
 - **Multi-database** — PostgreSQL, MySQL, SQL Server in a single session. Cross-database compare with one tool call.
 - **Read-only by design** — SQL guards, database-session read-only mode where supported, and optional per-connection firewall rules.
 - **Dialect-aware** — every tool understands `SELECT TOP 10` (mssql) vs `LIMIT` (others) and routes syntax correctly per connection.
-- **Tiered capability** — 23 tools across 4 tiers: schema introspection, query execution + history, EXPLAIN/optimization, anomaly detection, PII scanning, N+1 detection, query firewall, cross-DB compare.
+- **Tiered capability** — 26 tools across 4 tiers: schema introspection, query execution + history, EXPLAIN/optimization, anomaly detection, PII scanning, N+1 detection, query firewall, cross-DB compare, and runtime connection management (add/remove).
 - **Connections are managed at runtime** — added per-tenant via the `add_connection` tool after sign-in. Never an env var or install-time config.
 
 ## Product Links
@@ -44,7 +44,7 @@ ThinAir Data is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io
 - **Pricing:** https://data.thinair.co/checkout
 - **ThinAir:** https://thinair.co
 
-## Tools (selected — full list of 23 in [docs](https://data.thinair.co/docs/tools))
+## Tools (selected — full list of 26 in [docs](https://data.thinair.co/docs/tools))
 
 | Tool | Tier | Description |
 |------|------|-------------|
@@ -59,7 +59,7 @@ ThinAir Data is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io
 | `find_n_plus_one` | architect | Identify N+1 query patterns in `query_history` |
 | `query_firewall` | architect | Per-connection custom-block rules (deny specific tables/queries) |
 
-`add_connection`, `query_optimize`, `explain_query`, `suggest_queries`, `generate_migration`, `watch_table`, `saved_queries`, `impact_analysis`, and others round out the 23-tool surface.
+`add_connection`, `remove_connection`, `optimize_query`, `explain_query`, `suggest_queries`, `generate_migration`, `generate_seed_data`, `watch_table`, `saved_queries`, `impact_analysis`, `configure_allowlist`, and others round out the 26-tool surface.
 
 ## Quick Start
 

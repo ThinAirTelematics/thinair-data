@@ -5,9 +5,11 @@
 [![npm](https://img.shields.io/npm/v/@thinairtelematics/data-mcp)](https://www.npmjs.com/package/@thinairtelematics/data-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-ThinAir Data MCP is a **hosted** [Model Context Protocol](https://modelcontextprotocol.io) server that gives AI assistants (Claude Desktop, Cursor, Copilot, Cline, Continue, Perplexity, Zed, and any MCP-compatible client) direct, read-only access to your databases — with 23 dialect-aware tools across 4 tiers.
+> **Primary package:** this is also published as [`@thinairtelematics/data`](https://www.npmjs.com/package/@thinairtelematics/data) — the recommended scoped package. Both print a config for the same hosted server.
 
-No local server to run. No Docker. No ports. This npm package is a tiny config printer; the actual MCP server runs on Cloudflare at `data.thinair.co/mcp`.
+ThinAir Data MCP is a **hosted** [Model Context Protocol](https://modelcontextprotocol.io) server that gives AI assistants (Claude Desktop, Cursor, Copilot, Cline, Continue, Perplexity, Zed, and any MCP-compatible client) direct, read-only access to your databases — with 26 tools across 4 tiers.
+
+No local server to run. No Docker. No ports. This npm package is a tiny config printer; the actual MCP server is hosted at `data.thinair.co/mcp`.
 
 ---
 
@@ -17,7 +19,7 @@ No local server to run. No Docker. No ports. This npm package is a tiny config p
 npx @thinairtelematics/data-mcp
 ```
 
-Prints a keyless MCP config — paste into your client's `mcp.json` and restart. On the first tool call your client opens a browser tab at `/authorize`, you paste a connection string, and the bearer token is cached locally. **No manual API key to manage.**
+Prints a keyless MCP config — paste into your client's `mcp.json` and restart. On the first tool call your client opens a browser tab to authorize — one click, no database required up front — and the bearer token is cached locally. You add databases afterward by asking your agent to run the `add_connection` tool. **No manual API key to manage.**
 
 ### Getting a persistent key
 
@@ -25,7 +27,7 @@ For CI, scripts, or non-OAuth clients, you need an explicit `ta_data_*` key. Onc
 
 > *"Call the `issue_api_key` tool."*
 
-That's the only way to mint a persistent key — there is no web signup page. The tool is rate-limited to 5 issuances per tenant per day. Paste the returned key into `--api-key`:
+That mints a persistent key from your connected session; you can also get one from the hosted connect page at `data.thinair.co/connect`. The tool is rate-limited to 5 issuances per tenant per day. Paste the returned key into `--api-key`:
 
 ```bash
 npx @thinairtelematics/data-mcp --api-key ta_data_...

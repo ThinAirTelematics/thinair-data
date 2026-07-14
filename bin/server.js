@@ -2,7 +2,7 @@
 /**
  * @thinairtelematics/data — local stdio reference adapter.
  *
- * Production runtime is hosted on Cloudflare Workers at
+ * Production runtime is hosted at
  * https://data.thinair.co/mcp (streamable-http transport, OAuth 2.0 + Bearer).
  *
  * This file is a STATIC tool-catalog adapter that satisfies stdio-only
@@ -71,6 +71,18 @@ const TOOLS = [
     name: "list_connections",
     description:
       "List every database connection registered for your tenant: name, id, dbType (postgres / mysql / mssql), createdAt. Flags duplicate names. Returns nothing sensitive (no DSN, no credentials).",
+    inputSchema: { type: "object" },
+  },
+  {
+    name: "add_connection",
+    description:
+      "Get a secure one-time link to register a new database connection (postgres, mysql, or mssql). Does NOT take a connection string as input — you open the returned link and paste the DSN into a secure web form; it is never sent through chat. Response includes the connection-string format for the chosen dialect.",
+    inputSchema: { type: "object" },
+  },
+  {
+    name: "remove_connection",
+    description:
+      "Remove a stored database connection by name. Deletes ONLY ThinAir's saved connection record (name, encrypted DSN) — your actual database is never touched, nothing is dropped or altered. Call list_connections first if unsure of the exact name.",
     inputSchema: { type: "object" },
   },
   {
@@ -169,6 +181,13 @@ const TOOLS = [
     name: "cross_db_query",
     description:
       "Run a federated query across multiple connections (different dialects). Returns a unified result set with per-source provenance. [ARCHITECT tier]",
+    inputSchema: { type: "object" },
+  },
+  // ENTERPRISE tier
+  {
+    name: "configure_allowlist",
+    description:
+      "Manage hard SQL guardrails for an enterprise connection: a TABLE ALLOWLIST (queries may reference only the listed tables, enforced at the AST level across subqueries/CTEs/JOINs) and a PII MASKING policy for query results. Both opt-out by default. [ENTERPRISE tier]",
     inputSchema: { type: "object" },
   },
 ];

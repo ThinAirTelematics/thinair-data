@@ -4,8 +4,8 @@
 // Not a local server. This binary prints a ready-to-paste MCP client config
 // for https://data.thinair.co/mcp, with optional API-key embedding. Your
 // MCP client (Claude Desktop, Cursor, Copilot, Cline, Continue, Perplexity,
-// Zed, …) handles the actual MCP protocol — speaking URL transport to our
-// Cloudflare-hosted worker.
+// Zed, …) handles the actual MCP protocol — speaking URL transport to the
+// hosted ThinAir Data server.
 //
 // Usage:
 //   npx @thinairtelematics/data-mcp                   # keyless (OAuth on first call)
