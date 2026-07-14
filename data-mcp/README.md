@@ -7,7 +7,7 @@
 
 > **Primary package:** this is also published as [`@thinairtelematics/data`](https://www.npmjs.com/package/@thinairtelematics/data) — the recommended scoped package. Both print a config for the same hosted server.
 
-ThinAir Data MCP is a **hosted** [Model Context Protocol](https://modelcontextprotocol.io) server that gives AI assistants (Claude Desktop, Cursor, Copilot, Cline, Continue, Perplexity, Zed, and any MCP-compatible client) direct, read-only access to your databases — with 23 dialect-aware tools across 4 tiers.
+ThinAir Data MCP is a **hosted** [Model Context Protocol](https://modelcontextprotocol.io) server that gives AI assistants (Claude Desktop, Cursor, Copilot, Cline, Continue, Perplexity, Zed, and any MCP-compatible client) direct, read-only access to your databases — with 26 tools across 4 tiers.
 
 No local server to run. No Docker. No ports. This npm package is a tiny config printer; the actual MCP server is hosted at `data.thinair.co/mcp`.
 

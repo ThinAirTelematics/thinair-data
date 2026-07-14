@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "co.thinair/data",
-  "description": "The only MCP database server for PostgreSQL, MySQL, and SQL Server in one session. 23 dialect-aware tools across 4 tiers: schema introspection, cross-database compare, query firewall, anomaly detection, PII scanning, N+1 detection, EXPLAIN/optimization, query history. Read-only enforced at three independent layers (SQL guard, session READ ONLY, optional per-connection custom firewall). OAuth 2.1 (keyless) or API key auth. Database connections are added per-tenant via the `add_connection` tool *after* sign-in — not at install time. Globally edge-deployed for low latency.",
+  "description": "The only MCP database server for PostgreSQL, MySQL, and SQL Server in one session. 26 tools across 4 tiers: schema introspection, cross-database compare, query firewall, anomaly detection, PII scanning, N+1 detection, EXPLAIN/optimization, query history, and runtime connection management. Read-only enforced at three independent layers (SQL guard, session READ ONLY, optional per-connection custom firewall). OAuth 2.1 (keyless) or API key auth. Database connections are added per-tenant via the `add_connection` tool *after* sign-in — not at install time. Globally edge-deployed for low latency.",
   "websiteUrl": "https://data.thinair.co",
   "version": "2.1.4",
   "remotes": [
