@@ -2,7 +2,7 @@
 /**
  * @thinairtelematics/data — local stdio reference adapter.
  *
- * Production runtime is hosted on Cloudflare Workers at
+ * Production runtime is hosted at
  * https://data.thinair.co/mcp (streamable-http transport, OAuth 2.0 + Bearer).
  *
  * This file is a STATIC tool-catalog adapter that satisfies stdio-only
