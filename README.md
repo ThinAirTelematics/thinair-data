@@ -2,7 +2,7 @@
 
 **The only MCP database server for PostgreSQL, MySQL, and SQL Server in one session** — 26 tools across 4 tiers — schema introspection, cross-database compare, query firewall, PII scanning, N+1 detection, and runtime connection management. Read-only data access by design.
 
-**26 tools** · PostgreSQL · MySQL · SQL Server · Read-only data access, schema discovery, profiling, SQL safety, anomaly detection
+**<!-- BEGIN:TOOLCOUNT -->26<!-- END:TOOLCOUNT --> tools** · PostgreSQL · MySQL · SQL Server · Read-only data access, schema discovery, profiling, SQL safety, anomaly detection
 
 [![npm version](https://img.shields.io/npm/v/@thinairtelematics/data)](https://www.npmjs.com/package/@thinairtelematics/data)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -44,8 +44,26 @@ ThinAir Data is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io
 - **Pricing:** https://data.thinair.co/checkout
 - **ThinAir:** https://thinair.co
 
+## Agent Discovery
+
+<!-- BEGIN:AGENT-DISCOVERY -->
+Autonomous agents and directory crawlers can discover this server's capabilities
+without parsing this README. All three surfaces are live and served by the hosted
+product:
+
+| Surface | URL | Carries |
+|---------|-----|---------|
+| Agent card (A2A) | `https://data.thinair.co/.well-known/agent-card.json` | Protocol version, endpoint, transport, auth schemes, and all 26 skills |
+| Skills index | `https://data.thinair.co/.well-known/skills.json` | Machine-readable catalog of the 26 tools |
+| LLM guide | `https://data.thinair.co/llms.txt` | Plain-text orientation for language models |
+
+The MCP endpoint itself is `https://data.thinair.co/mcp` (streamable-http; OAuth 2.1
+keyless, or `Authorization: Bearer`).
+<!-- END:AGENT-DISCOVERY -->
+
 ## Tools (selected — full list of 26 in [docs](https://data.thinair.co/docs/tools))
 
+<!-- BEGIN:TOOLS -->
 | Tool | Tier | Description |
 |------|------|-------------|
 | `list_connections` | discover | List connected databases with names + dialects |
@@ -60,6 +78,7 @@ ThinAir Data is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io
 | `query_firewall` | architect | Per-connection custom-block rules (deny specific tables/queries) |
 
 `add_connection`, `remove_connection`, `optimize_query`, `explain_query`, `suggest_queries`, `generate_migration`, `generate_seed_data`, `watch_table`, `saved_queries`, `impact_analysis`, `configure_allowlist`, and others round out the 26-tool surface.
+<!-- END:TOOLS -->
 
 ## Quick Start
 
