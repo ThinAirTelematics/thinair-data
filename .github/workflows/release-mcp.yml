@@ -13,17 +13,14 @@ name: Publish @thinairtelematics/data-mcp
 #   workflow filename  release-mcp.yml
 #   environment        Production
 #
-# Triggers:
-#  - push to main under data-mcp/** → publish automatically
-#  - workflow_dispatch from any branch → smoke-test + version gate;
-#    publish only when `dry_run=false` (default: true).
+# Trigger: workflow_dispatch only. Publishing is a deliberate act.
+#  - smoke-test + version gate always run;
+#  - publish only when `dry_run=false` (default: true).
+# The former `push to main under data-mcp/**` trigger was removed: it
+# fired on ordinary docs commits (and on edits to this file), turning any
+# merge into an unreviewed npm publish.
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'data-mcp/**'
-      - '.github/workflows/release-mcp.yml'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -47,16 +44,31 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Node 20
+      - name: Set up Node 22
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           # Deliberately NOT setting registry-url. setup-node would inject
           # a userconfig .npmrc with _authToken=${NODE_AUTH_TOKEN} that
           # shadows OIDC publish via Trusted Publisher.
 
       - name: Upgrade npm (Trusted Publisher OIDC auto-auth needs 11.5+)
-        run: npm install -g npm@latest
+        run: |
+          # npm@latest is now npm 12, whose engines are
+          # ^22.22.2 || ^24.15.0 || >=26.0.0. On the old Node 20 runner that was a
+          # hard EBADENGINE failure (exit 1) — it broke every release run from
+          # 2026-07-14 onward. Pin the 11.x line: it supports Node >=22.9.0, and
+          # 11.5.0 is where OIDC publish landed (11.5.1 fixed provenance
+          # defaulting to OIDC). The assert below is the real gate — a silent
+          # downgrade must fail the job, not publish without provenance.
+          npm install -g npm@^11
+          NPM_V="$(npm --version)"
+          MIN=11.5.1
+          echo "npm is now $NPM_V (floor $MIN)"
+          if [ "$(printf '%s\n%s\n' "$MIN" "$NPM_V" | sort -V | head -n1)" != "$MIN" ]; then
+            echo "::error::npm $NPM_V is below $MIN — Trusted Publisher OIDC auto-auth would silently fail"
+            exit 1
+          fi
 
       - name: Smoke test — binary runs and prints help
         run: |
