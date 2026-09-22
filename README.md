@@ -68,12 +68,12 @@ keyless, or `Authorization: Bearer`).
 |------|------|-------------|
 | `list_connections` | discover | List connected databases with names + dialects |
 | `describe_schema` | discover | Get schema, columns, indexes, FKs across any connection |
-| `query_sql` | discover | Execute a parameterized read-only SQL query |
+| `query_sql` | discover | Execute a read-only SQL query |
+| `detect_anomalies` | discover | Statistical outliers: volume drops/spikes, data gaps, high null rates, stale data |
 | `query_history` | build | Recent queries with timing, row counts, status |
 | `data_profile` | build | Distributions, null rates, cardinality on a table |
+| `pii_scan` | build | Scan a table for PII patterns (SSN, email, phone, credit card) |
 | `cross_db_query` | architect | Run the same query across 2–4 connections (regional/dialect compare) |
-| `detect_anomalies` | architect | Statistical outliers in row growth, latency, value distributions |
-| `pii_scan` | architect | Scan a table for PII patterns (SSN, email, phone, credit card) |
 | `find_n_plus_one` | architect | Identify N+1 query patterns in `query_history` |
 | `query_firewall` | architect | Per-connection custom-block rules (deny specific tables/queries) |
 
@@ -106,7 +106,7 @@ The OAuth flow completes at first use — no manual token setup required. After 
     "thinair-data": {
       "url": "https://data.thinair.co/mcp",
       "headers": {
-        "Authorization": "Bearer ta_live_..."
+        "Authorization": "Bearer ta_data_..."
       }
     }
   }
