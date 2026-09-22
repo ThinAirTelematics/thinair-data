@@ -101,13 +101,13 @@ const TOOLS = [
   {
     name: "explain_query",
     description:
-      "Analyze a SQL query's execution plan and return plain-English performance recommendations. Runs EXPLAIN ANALYZE (Postgres) or EXPLAIN FORMAT=JSON (MySQL). [BUILD tier]",
+      "Analyze a SQL query's execution plan and return plain-English performance recommendations. Postgres and mssql plans are ESTIMATED (the query is not executed); MySQL 8.0.18+ runs EXPLAIN ANALYZE, which does execute the query for real timings. [BUILD tier]",
     inputSchema: { type: "object" },
   },
   {
     name: "optimize_query",
     description:
-      "Suggest a rewritten, optimized version of a SQL query with explanations. Identifies sequential scans, missing indexes, sort spills, join inefficiencies, and suggests index DDL. [BUILD tier]",
+      "Analyze a SQL query's plan and return ranked optimization recommendations with explanations: sequential scans, missing indexes, join inefficiencies. Does NOT return a rewritten query. Ready-to-run index DDL is provided on mssql only; postgres/mysql get column-level recommendations instead. [BUILD tier]",
     inputSchema: { type: "object" },
   },
   {
@@ -156,7 +156,7 @@ const TOOLS = [
   {
     name: "watch_table",
     description:
-      "Monitor a table's row count and latest record. Compares to previous snapshot to show changes. Built-in scheduler. [ARCHITECT tier]",
+      "Monitor a table's row count and latest record by comparing against the snapshot from the previous call. There is no scheduler or background polling — call it again to see what changed. [ARCHITECT tier]",
     inputSchema: { type: "object" },
   },
   {
@@ -180,7 +180,7 @@ const TOOLS = [
   {
     name: "cross_db_query",
     description:
-      "Run a federated query across multiple connections (different dialects). Returns a unified result set with per-source provenance. [ARCHITECT tier]",
+      "Run the same SQL query across 2-4 connections (different dialects) in parallel. Returns per-connection rows and errors for diffing, not a merged result set. [ARCHITECT tier]",
     inputSchema: { type: "object" },
   },
   // ENTERPRISE tier
