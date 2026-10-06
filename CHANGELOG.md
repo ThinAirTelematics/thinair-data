@@ -6,6 +6,22 @@ and the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) format.
 
 ## [Unreleased]
 
+## [2.2.2] — 2026-10-06
+
+### Security
+- Tightened the `@modelcontextprotocol/sdk` range from `^1.0.0` to `^1.31.0`.
+  The old range still admitted releases 1.12.0 through 1.30.1, which are affected
+  by GHSA-6qxp-vccf-f47h. The lockfile also picks up patched transitive
+  dependencies, and `npm audit --omit=dev --audit-level=high` now reports 0
+  vulnerabilities.
+
+### Changed
+- `tools.json` re-synced with the live tool catalog (2026-10-06). 22 tools gained
+  richer output schemas, including masking and row-cap metadata, and the
+  `describe_schema` description is corrected.
+- README tier and description corrections for `describe_schema`, `pii_scan`, and
+  `detect_anomalies`.
+
 ## [2.2.0] — 2026-09-14
 
 ### Fixed

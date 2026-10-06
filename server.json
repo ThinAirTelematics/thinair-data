@@ -3,7 +3,7 @@
   "name": "co.thinair/data",
   "description": "PostgreSQL, MySQL, and SQL Server in one session. 26 read-only MCP tools for AI agents.",
   "websiteUrl": "https://data.thinair.co",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "remotes": [
     {
       "type": "streamable-http",

@@ -1,6 +1,6 @@
 {
   "name": "@thinairtelematics/data",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "mcpName": "co.thinair/data",
   "repository": {
     "type": "git",
@@ -44,6 +44,6 @@
     "node": ">=18"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0"
+    "@modelcontextprotocol/sdk": "^1.31.0"
   }
 }
