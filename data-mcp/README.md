@@ -83,7 +83,7 @@ Keys come from the MCP server itself — connect any client keyless (above), the
 | Tool | Description |
 |------|-------------|
 | `query_sql` | Execute read-only SELECT / WITH / EXPLAIN — dialect-aware |
-| `describe_schema` | Full schema: tables, columns, types, PKs, FKs, indexes. Cached 1h |
+| `describe_schema` | Tables, columns, types, primary keys and indexes (foreign keys are not reported; MySQL indexes not yet). Cached 1h |
 | `analyze_table` | Row count, null rates, cardinality, min/max/avg, date ranges |
 | `detect_anomalies` | Volume drops/spikes, data gaps, high nulls, stale data — severity ranked |
 | `suggest_queries` | Schema-aware SQL suggestions based on a topic or goal |
