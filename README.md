@@ -67,13 +67,13 @@ keyless, or `Authorization: Bearer`).
 | Tool | Tier | Description |
 |------|------|-------------|
 | `list_connections` | discover | List connected databases with names + dialects |
-| `describe_schema` | discover | Get schema, columns, indexes, FKs across any connection |
+| `describe_schema` | discover | Introspect tables, columns, types, primary keys, and indexes for a connection (foreign keys are not reported; MySQL indexes not yet) |
 | `query_sql` | discover | Execute a parameterized read-only SQL query |
 | `query_history` | build | Recent queries with timing, row counts, status |
 | `data_profile` | build | Distributions, null rates, cardinality on a table |
 | `cross_db_query` | architect | Run the same query across 2–4 connections (regional/dialect compare) |
-| `detect_anomalies` | architect | Statistical outliers in row growth, latency, value distributions |
-| `pii_scan` | architect | Scan a table for PII patterns (SSN, email, phone, credit card) |
+| `detect_anomalies` | discover | Statistical outliers in row growth, latency, value distributions |
+| `pii_scan` | build | Scan a table for PII patterns (SSN, email, phone, credit card) |
 | `find_n_plus_one` | architect | Identify N+1 query patterns in `query_history` |
 | `query_firewall` | architect | Per-connection custom-block rules (deny specific tables/queries) |
 

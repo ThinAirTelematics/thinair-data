@@ -192,6 +192,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -413,6 +416,18 @@
             "truncated": {
               "type": "boolean"
             },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
+            },
             "connection": {
               "type": "string"
             },
@@ -536,6 +551,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -759,6 +777,18 @@
             },
             "truncated": {
               "type": "boolean"
+            },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
             },
             "connection": {
               "type": "string"
@@ -901,6 +931,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -1121,6 +1154,18 @@
             },
             "truncated": {
               "type": "boolean"
+            },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
             },
             "connection": {
               "type": "string"
@@ -1249,6 +1294,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -1470,6 +1518,18 @@
             "truncated": {
               "type": "boolean"
             },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
+            },
             "connection": {
               "type": "string"
             },
@@ -1508,7 +1568,7 @@
   },
   {
     "name": "describe_schema",
-    "description": "Introspect the full database structure for a connection: every table, column, type, primary key, foreign key, and index — the map to build queries against an unfamiliar database. Use analyze_table or data_profile instead when you need column VALUES (stats, nulls, PII) rather than structure. Read-only against your database. Results are cached 1 hour per connection; pass refresh=true to force a live re-introspection and bypass that cache, e.g. right after altering the schema. Does not consume daily quota. Returns tables with their columns, types, keys, and indexes.",
+    "description": "Introspect the full database structure for a connection: every table, column, type, primary key, and index (MySQL connections do not report indexes yet; foreign keys are not reported) — the map to build queries against an unfamiliar database. Use analyze_table or data_profile instead when you need column VALUES (stats, nulls, PII) rather than structure. Read-only against your database. Results are cached 1 hour per connection; pass refresh=true to force a live re-introspection and bypass that cache, e.g. right after altering the schema. Does not consume daily quota. Returns tables with their columns, types, primary keys, and indexes.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -1580,6 +1640,34 @@
                       ],
                       "additionalProperties": true
                     }
+                  },
+                  "indexes": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "columns": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "isUnique": {
+                          "type": "boolean"
+                        },
+                        "isPrimary": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "columns"
+                      ],
+                      "additionalProperties": true
+                    }
                   }
                 },
                 "required": [
@@ -1609,6 +1697,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -1829,6 +1920,18 @@
             },
             "truncated": {
               "type": "boolean"
+            },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
             },
             "connection": {
               "type": "string"
@@ -1966,6 +2069,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -2189,6 +2295,18 @@
             },
             "truncated": {
               "type": "boolean"
+            },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
             },
             "connection": {
               "type": "string"
@@ -2285,6 +2403,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -2508,6 +2629,18 @@
             },
             "truncated": {
               "type": "boolean"
+            },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
             },
             "connection": {
               "type": "string"
@@ -2610,6 +2743,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -2830,6 +2966,18 @@
             },
             "truncated": {
               "type": "boolean"
+            },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
             },
             "connection": {
               "type": "string"
@@ -2940,6 +3088,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -3163,6 +3314,18 @@
             },
             "truncated": {
               "type": "boolean"
+            },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
             },
             "connection": {
               "type": "string"
@@ -3274,6 +3437,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -3497,6 +3663,18 @@
             },
             "truncated": {
               "type": "boolean"
+            },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
             },
             "connection": {
               "type": "string"
@@ -3672,6 +3850,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -3892,6 +4073,18 @@
             },
             "truncated": {
               "type": "boolean"
+            },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
             },
             "connection": {
               "type": "string"
@@ -4092,6 +4285,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -4315,6 +4511,18 @@
             },
             "truncated": {
               "type": "boolean"
+            },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
             },
             "connection": {
               "type": "string"
@@ -4426,6 +4634,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -4649,6 +4860,18 @@
             },
             "truncated": {
               "type": "boolean"
+            },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
             },
             "connection": {
               "type": "string"
@@ -4787,6 +5010,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -5007,6 +5233,18 @@
             },
             "truncated": {
               "type": "boolean"
+            },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
             },
             "connection": {
               "type": "string"
@@ -5199,6 +5437,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -5422,6 +5663,18 @@
             },
             "truncated": {
               "type": "boolean"
+            },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
             },
             "connection": {
               "type": "string"
@@ -5544,6 +5797,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -5765,6 +6021,18 @@
             "truncated": {
               "type": "boolean"
             },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
+            },
             "connection": {
               "type": "string"
             },
@@ -5863,6 +6131,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -6087,6 +6358,18 @@
             "truncated": {
               "type": "boolean"
             },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
+            },
             "connection": {
               "type": "string"
             },
@@ -6111,6 +6394,25 @@
             "plan": {}
           },
           "additionalProperties": true
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "type"
+            ],
+            "additionalProperties": true
+          }
         }
       },
       "additionalProperties": true,
@@ -6382,6 +6684,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -6603,6 +6908,18 @@
             "truncated": {
               "type": "boolean"
             },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
+            },
             "connection": {
               "type": "string"
             },
@@ -6688,6 +7005,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -6911,6 +7231,18 @@
             },
             "truncated": {
               "type": "boolean"
+            },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
             },
             "connection": {
               "type": "string"
@@ -7016,6 +7348,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -7239,6 +7574,18 @@
             },
             "truncated": {
               "type": "boolean"
+            },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
             },
             "connection": {
               "type": "string"
@@ -7356,6 +7703,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -7576,6 +7926,18 @@
             },
             "truncated": {
               "type": "boolean"
+            },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
             },
             "connection": {
               "type": "string"
@@ -7700,6 +8062,9 @@
                 },
                 "internal_code": {
                   "type": "string"
+                },
+                "retryable": {
+                  "type": "boolean"
                 }
               },
               "required": [
@@ -7920,6 +8285,18 @@
             },
             "truncated": {
               "type": "boolean"
+            },
+            "rowCapReached": {
+              "type": "boolean"
+            },
+            "maskedColumns": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "maskedCells": {
+              "type": "number"
             },
             "connection": {
               "type": "string"
