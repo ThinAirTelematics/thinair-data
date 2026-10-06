@@ -72,7 +72,7 @@ keyless, or `Authorization: Bearer`).
 | `query_history` | build | Recent queries with timing, row counts, status |
 | `data_profile` | build | Distributions, null rates, cardinality on a table |
 | `cross_db_query` | architect | Run the same query across 2–4 connections (regional/dialect compare) |
-| `detect_anomalies` | architect | Statistical outliers in row growth, latency, value distributions |
+| `detect_anomalies` | discover | Statistical outliers in row growth, latency, value distributions |
 | `pii_scan` | build | Scan a table for PII patterns (SSN, email, phone, credit card) |
 | `find_n_plus_one` | architect | Identify N+1 query patterns in `query_history` |
 | `query_firewall` | architect | Per-connection custom-block rules (deny specific tables/queries) |
