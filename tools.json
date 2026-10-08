@@ -4145,7 +4145,7 @@
         },
         "api_key": {
           "type": "string",
-          "description": "One-time API key secret. Returned only on successful creation, in both structuredContent.api_key and content[0].text — save it immediately. The server stores only sha-256 of the secret; once this response is lost, the key is unrecoverable and must be rotated. Matches AWS IAM / Stripe / GitHub PAT one-time-reveal semantics."
+          "description": "One-time API key secret. Returned only on successful creation, in both structuredContent.api_key and content[0].text. Save this key now. It is shown once. ThinAir authenticates using a hash of the key. Matches AWS IAM / Stripe / GitHub PAT one-time-reveal semantics."
         },
         "key_id": {
           "type": "string",
@@ -6481,7 +6481,7 @@
   },
   {
     "name": "remove_connection",
-    "description": "Remove a stored database connection from ThinAir Data by name. This deletes ONLY ThinAir's saved connection record (name, encrypted DSN) — your actual database is never touched, nothing is dropped or altered on it. Call list_connections first if you're unsure of the exact name.",
+    "description": "Remove a stored database connection from ThinAir Data by name. This deletes the stored credential, cached schema and schema snapshots, table watches and query firewall rules for that connection, and stops automatic credential renewal. It keeps your query history (7 days), saved queries and audit logs. Your actual database is never touched, nothing is dropped or altered on it; for a few minutes after removal, ThinAir's connection pool may keep or reopen sessions to it using a temporary copy of the connection details, which is then discarded. Call list_connections first if you're unsure of the exact name.",
     "inputSchema": {
       "type": "object",
       "properties": {
