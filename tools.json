@@ -4124,7 +4124,7 @@
   },
   {
     "name": "issue_api_key",
-    "description": "Issue a fresh ta_data_* API key for ThinAir DATA (databases/SQL) for your current tenant, and rotate: any previous key keeps working for one hour, then stops — the response reports how many and exactly when (previous_keys_retiring, previous_keys_retire_at). Use it to rotate, or when an integration needs a key and can't reach the console. The new key is tied to your existing plan tier. Rate-limited to 5 issuances per tenant per day. NOTE: this key works ONLY against ThinAir Data — it does NOT authenticate against ThinAir Geo, which issues its own ta_geo_* key from its own identically-named tool.",
+    "description": "Get the link to the ThinAir DATA console where you create and manage your API keys (ta_data_*), plus your current plan. This tool does NOT create, rotate or return a key: you create the key yourself in the console, where it is shown to you once, and every key you already have keeps working unchanged. Use it when an integration needs a key and you want to point the user at the right place. NOTE: keys created in this console work ONLY against ThinAir Data - they do NOT authenticate against ThinAir Geo, which has its own console and an identically-named issue_api_key tool.",
     "inputSchema": {
       "type": "object",
       "properties": {},
@@ -4140,40 +4140,17 @@
             "error"
           ]
         },
-        "credential_returned_once": {
-          "type": "boolean"
-        },
-        "api_key": {
+        "console_url": {
           "type": "string",
-          "description": "One-time API key secret. Returned only on successful creation, in both structuredContent.api_key and content[0].text. Save this key now. It is shown once. ThinAir authenticates using a hash of the key. Matches AWS IAM / Stripe / GitHub PAT one-time-reveal semantics."
+          "description": "The ThinAir Data console page where you create and manage API keys. Open it, sign in, and create a key there; it is shown to you once, in the console. This tool never creates, rotates or returns a key."
         },
-        "key_id": {
+        "instructions": {
           "type": "string",
-          "description": "Non-secret fingerprint of the issued key. Safe to log and surface in UI."
-        },
-        "previous_keys_retiring": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "How many previously-live keys this mint scheduled to retire. issue_api_key rotates: after the grace window the returned key is the only live key on the tenant. 0 means there was nothing else."
-        },
-        "previous_keys_retire_at": {
-          "type": "string",
-          "description": "ISO 8601 instant when the previous keys stop working (one hour after this mint). Present only when previous_keys_retiring > 0. Update anything still using them before this time."
-        },
-        "tenantId": {
-          "type": "string"
-        },
-        "user": {
-          "type": "string"
+          "description": "Plain-language next step for the user, including which product this is: a key created in this console works ONLY against ThinAir Data, not ThinAir Geo."
         },
         "plan": {
-          "type": "string"
-        },
-        "usage": {
-          "type": "string"
-        },
-        "note": {
-          "type": "string"
+          "type": "string",
+          "description": "The account's current plan. Existing keys keep working on it, unchanged."
         },
         "error": {
           "type": "object",
@@ -4190,9 +4167,6 @@
             "message"
           ],
           "additionalProperties": false
-        },
-        "retry_after_s": {
-          "type": "number"
         }
       },
       "required": [
@@ -4202,10 +4176,10 @@
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "annotations": {
-      "title": "Issue ThinAir Data API Key",
-      "readOnlyHint": false,
+      "title": "Get ThinAir Data API Key Console Link",
+      "readOnlyHint": true,
       "destructiveHint": false,
-      "idempotentHint": false,
+      "idempotentHint": true,
       "openWorldHint": false
     }
   },
