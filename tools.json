@@ -25,7 +25,6 @@
         "name",
         "dialect"
       ],
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -79,8 +78,8 @@
       "required": [
         "status"
       ],
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Add Database Connection",
@@ -102,20 +101,19 @@
           "description": "Table name to analyze"
         },
         "column": {
+          "description": "Specific column to deep-analyze",
           "type": "string",
-          "maxLength": 256,
-          "description": "Specific column to deep-analyze"
+          "maxLength": 256
         },
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
       "required": [
         "table"
       ],
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -143,20 +141,32 @@
                   "min": {},
                   "max": {},
                   "avg": {
-                    "$ref": "#/properties/data/anyOf/0/items/properties/null_pct"
+                    "type": [
+                      "number",
+                      "string"
+                    ]
                   },
                   "earliest": {},
                   "latest": {},
                   "distinct_count": {
-                    "$ref": "#/properties/data/anyOf/0/items/properties/null_pct"
+                    "type": [
+                      "number",
+                      "string"
+                    ]
                   },
                   "cardinality_pct": {
-                    "$ref": "#/properties/data/anyOf/0/items/properties/null_pct"
+                    "type": [
+                      "number",
+                      "string"
+                    ]
                   },
                   "top_values": {
                     "type": "array",
                     "items": {
                       "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
                       "additionalProperties": {}
                     }
                   }
@@ -164,11 +174,14 @@
                 "required": [
                   "name"
                 ],
-                "additionalProperties": true
+                "additionalProperties": {}
               }
             },
             {
               "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
               "additionalProperties": {}
             },
             {
@@ -185,6 +198,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -200,7 +216,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -261,7 +277,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -312,7 +328,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -340,7 +356,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -358,10 +374,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -398,7 +414,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -408,10 +424,16 @@
               "type": "string"
             },
             "executionTimeMs": {
-              "$ref": "#/properties/data/anyOf/0/items/properties/null_pct"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "rowCount": {
-              "$ref": "#/properties/data/anyOf/0/items/properties/null_pct"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -451,11 +473,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Analyze Table",
@@ -481,19 +503,20 @@
           "description": "What to do"
         },
         "tables": {
+          "description": "For set_tables: the allowlist. Bare ('users') or one-level schema-qualified ('public.users'). Empty array = lock down (no tables allowed).",
+          "maxItems": 500,
           "type": "array",
           "items": {
             "type": "string",
             "maxLength": 256
-          },
-          "maxItems": 500,
-          "description": "For set_tables: the allowlist. Bare ('users') or one-level schema-qualified ('public.users'). Empty array = lock down (no tables allowed)."
+          }
         },
         "pii_enabled": {
-          "type": "boolean",
-          "description": "For set_pii_policy: enable or disable result masking."
+          "description": "For set_pii_policy: enable or disable result masking.",
+          "type": "boolean"
         },
         "mask_patterns": {
+          "description": "For set_pii_policy: which PII kinds to mask (defaults to all when enabling without a list).",
           "type": "array",
           "items": {
             "type": "string",
@@ -506,19 +529,17 @@
               "jwt",
               "bearer_token"
             ]
-          },
-          "description": "For set_pii_policy: which PII kinds to mask (defaults to all when enabling without a list)."
+          }
         },
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect. If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect. If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
       "required": [
         "action"
       ],
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -528,6 +549,9 @@
           "anyOf": [
             {
               "type": "object",
+              "propertyNames": {
+                "type": "string"
+              },
               "additionalProperties": {}
             },
             {
@@ -544,6 +568,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -559,7 +586,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -620,7 +647,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -671,7 +698,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -699,7 +726,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -717,10 +744,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -757,7 +784,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -773,7 +800,10 @@
               ]
             },
             "rowCount": {
-              "$ref": "#/properties/meta/properties/executionTimeMs"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -813,11 +843,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Configure Allowlist & PII Policy",
@@ -851,7 +881,6 @@
         "sql",
         "connections"
       ],
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -873,6 +902,9 @@
                         "type": "array",
                         "items": {
                           "type": "object",
+                          "propertyNames": {
+                            "type": "string"
+                          },
                           "additionalProperties": {}
                         }
                       },
@@ -891,6 +923,9 @@
                     "type": "array",
                     "items": {
                       "type": "object",
+                      "propertyNames": {
+                        "type": "string"
+                      },
                       "additionalProperties": {}
                     }
                   },
@@ -901,13 +936,16 @@
                     ]
                   },
                   "execution_ms": {
-                    "$ref": "#/properties/data/anyOf/0/items/properties/rows/anyOf/2"
+                    "type": [
+                      "number",
+                      "string"
+                    ]
                   }
                 },
                 "required": [
                   "connection"
                 ],
-                "additionalProperties": true
+                "additionalProperties": {}
               }
             },
             {
@@ -924,6 +962,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -939,7 +980,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -1000,7 +1041,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -1051,7 +1092,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -1079,7 +1120,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -1097,10 +1138,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -1137,7 +1178,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -1147,10 +1188,16 @@
               "type": "string"
             },
             "executionTimeMs": {
-              "$ref": "#/properties/data/anyOf/0/items/properties/rows/anyOf/2"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "rowCount": {
-              "$ref": "#/properties/data/anyOf/0/items/properties/rows/anyOf/2"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -1190,11 +1237,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Cross-DB Query",
@@ -1215,15 +1262,14 @@
           "description": "Table to profile"
         },
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
       "required": [
         "table"
       ],
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -1255,7 +1301,10 @@
                     ]
                   },
                   "cardinality": {
-                    "$ref": "#/properties/data/anyOf/0/items/properties/null_pct"
+                    "type": [
+                      "number",
+                      "string"
+                    ]
                   },
                   "pii_risk": {
                     "type": "boolean"
@@ -1264,13 +1313,16 @@
                     "type": "string"
                   },
                   "distinct_count": {
-                    "$ref": "#/properties/data/anyOf/0/items/properties/null_pct"
+                    "type": [
+                      "number",
+                      "string"
+                    ]
                   }
                 },
                 "required": [
                   "name"
                 ],
-                "additionalProperties": true
+                "additionalProperties": {}
               }
             },
             {
@@ -1287,6 +1339,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -1302,7 +1357,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -1363,7 +1418,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -1414,7 +1469,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -1442,7 +1497,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -1460,10 +1515,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -1500,7 +1555,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -1510,10 +1565,16 @@
               "type": "string"
             },
             "executionTimeMs": {
-              "$ref": "#/properties/data/anyOf/0/items/properties/null_pct"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "rowCount": {
-              "$ref": "#/properties/data/anyOf/0/items/properties/null_pct"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -1553,11 +1614,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Data Profile",
@@ -1573,16 +1634,15 @@
       "type": "object",
       "properties": {
         "refresh": {
-          "type": "boolean",
-          "description": "Force live introspection, bypassing cache"
+          "description": "Force live introspection, bypassing cache",
+          "type": "boolean"
         },
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -1638,7 +1698,7 @@
                         "name",
                         "type"
                       ],
-                      "additionalProperties": true
+                      "additionalProperties": {}
                     }
                   },
                   "indexes": {
@@ -1666,14 +1726,14 @@
                         "name",
                         "columns"
                       ],
-                      "additionalProperties": true
+                      "additionalProperties": {}
                     }
                   }
                 },
                 "required": [
                   "name"
                 ],
-                "additionalProperties": true
+                "additionalProperties": {}
               }
             },
             {
@@ -1690,6 +1750,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -1705,7 +1768,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -1766,7 +1829,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -1817,7 +1880,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -1845,7 +1908,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -1863,10 +1926,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -1903,7 +1966,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -1913,10 +1976,16 @@
               "type": "string"
             },
             "executionTimeMs": {
-              "$ref": "#/properties/data/anyOf/0/items/properties/columns"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "rowCount": {
-              "$ref": "#/properties/data/anyOf/0/items/properties/columns"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -1956,11 +2025,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Describe Schema",
@@ -1981,20 +2050,19 @@
           "description": "Table to scan for anomalies"
         },
         "date_column": {
+          "description": "Date column for trend analysis (auto-detected if omitted)",
           "type": "string",
-          "maxLength": 256,
-          "description": "Date column for trend analysis (auto-detected if omitted)"
+          "maxLength": 256
         },
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
       "required": [
         "table"
       ],
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -2045,7 +2113,7 @@
                 "required": [
                   "severity"
                 ],
-                "additionalProperties": true
+                "additionalProperties": {}
               }
             },
             {
@@ -2062,6 +2130,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -2077,7 +2148,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -2138,7 +2209,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -2189,7 +2260,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -2217,7 +2288,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -2235,10 +2306,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -2275,7 +2346,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -2291,7 +2362,10 @@
               ]
             },
             "rowCount": {
-              "$ref": "#/properties/meta/properties/executionTimeMs"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -2331,11 +2405,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Detect Anomalies",
@@ -2356,15 +2430,14 @@
           "description": "The SELECT query to analyze"
         },
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
       "required": [
         "sql"
       ],
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -2380,7 +2453,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             {
               "type": "object",
@@ -2396,6 +2469,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -2411,7 +2487,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -2472,7 +2548,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -2523,7 +2599,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -2551,7 +2627,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -2569,10 +2645,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -2609,7 +2685,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -2625,7 +2701,10 @@
               ]
             },
             "rowCount": {
-              "$ref": "#/properties/meta/properties/executionTimeMs"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -2665,11 +2744,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Explain Query Plan",
@@ -2685,18 +2764,17 @@
       "type": "object",
       "properties": {
         "min_executions": {
+          "description": "Minimum executions to flag (default 5)",
           "type": "number",
           "minimum": 1,
-          "maximum": 1000000,
-          "description": "Minimum executions to flag (default 5)"
+          "maximum": 1000000
         },
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -2719,7 +2797,7 @@
                     ]
                   }
                 },
-                "additionalProperties": true
+                "additionalProperties": {}
               }
             },
             {
@@ -2736,6 +2814,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -2751,7 +2832,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -2812,7 +2893,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -2863,7 +2944,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -2891,7 +2972,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -2909,10 +2990,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -2949,7 +3030,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -2959,10 +3040,16 @@
               "type": "string"
             },
             "executionTimeMs": {
-              "$ref": "#/properties/data/anyOf/0/items/properties/executions"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "rowCount": {
-              "$ref": "#/properties/data/anyOf/0/items/properties/executions"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -3002,11 +3089,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Find N+1 Queries",
@@ -3027,15 +3114,14 @@
           "description": "Plain English: 'add soft delete to drivers', 'add index on trips.driver_id'"
         },
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
       "required": [
         "intent"
       ],
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -3065,7 +3151,7 @@
               "required": [
                 "up_sql"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             {
               "type": "object",
@@ -3081,6 +3167,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -3096,7 +3185,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -3157,7 +3246,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -3208,7 +3297,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -3236,7 +3325,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -3254,10 +3343,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -3294,7 +3383,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -3310,7 +3399,10 @@
               ]
             },
             "rowCount": {
-              "$ref": "#/properties/meta/properties/executionTimeMs"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -3350,11 +3442,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Generate Migration",
@@ -3375,29 +3467,28 @@
           "description": "Table to generate seed data for"
         },
         "row_count": {
+          "description": "Number of rows (default 100, max 1000)",
           "type": "number",
           "minimum": 1,
-          "maximum": 1000,
-          "description": "Number of rows (default 100, max 1000)"
+          "maximum": 1000
         },
         "format": {
+          "description": "Output format (default sql)",
           "type": "string",
           "enum": [
             "sql",
             "csv"
-          ],
-          "description": "Output format (default sql)"
+          ]
         },
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
       "required": [
         "table"
       ],
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -3430,6 +3521,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -3445,7 +3539,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -3506,7 +3600,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -3557,7 +3651,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -3585,7 +3679,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -3603,10 +3697,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -3643,7 +3737,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -3659,7 +3753,10 @@
               ]
             },
             "rowCount": {
-              "$ref": "#/properties/meta/properties/executionTimeMs"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -3699,11 +3796,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Generate Seed Data",
@@ -3724,15 +3821,14 @@
           "description": "Describe the change: 'rename vehicle_id to vehicle_uuid on trips', 'drop column X'"
         },
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
       "required": [
         "intent"
       ],
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -3762,7 +3858,7 @@
                       "type": "string"
                     }
                   },
-                  "additionalProperties": true
+                  "additionalProperties": {}
                 },
                 "analysis_scope": {
                   "type": "string",
@@ -3813,7 +3909,7 @@
                         "type": "string"
                       }
                     },
-                    "additionalProperties": true
+                    "additionalProperties": {}
                   }
                 },
                 "affected_views": {
@@ -3827,7 +3923,7 @@
               "required": [
                 "target_table"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             {
               "type": "object",
@@ -3843,6 +3939,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -3858,7 +3957,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -3919,7 +4018,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -3970,7 +4069,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -3998,7 +4097,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -4016,10 +4115,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -4056,7 +4155,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -4066,10 +4165,16 @@
               "type": "string"
             },
             "executionTimeMs": {
-              "$ref": "#/properties/data/anyOf/0/properties/row_count"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "rowCount": {
-              "$ref": "#/properties/data/anyOf/0/properties/row_count"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -4109,11 +4214,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Impact Analysis",
@@ -4141,16 +4246,16 @@
           ]
         },
         "console_url": {
-          "type": "string",
-          "description": "The ThinAir Data console page where you create and manage API keys. Open it, sign in, and create a key there; it is shown to you once, in the console. This tool never creates, rotates or returns a key."
+          "description": "The ThinAir Data console page where you create and manage API keys. Open it, sign in, and create a key there; it is shown to you once, in the console. This tool never creates, rotates or returns a key.",
+          "type": "string"
         },
         "instructions": {
-          "type": "string",
-          "description": "Plain-language next step for the user, including which product this is: a key created in this console works ONLY against ThinAir Data, not ThinAir Geo."
+          "description": "Plain-language next step for the user, including which product this is: a key created in this console works ONLY against ThinAir Data, not ThinAir Geo.",
+          "type": "string"
         },
         "plan": {
-          "type": "string",
-          "description": "The account's current plan. Existing keys keep working on it, unchanged."
+          "description": "The account's current plan. Existing keys keep working on it, unchanged.",
+          "type": "string"
         },
         "error": {
           "type": "object",
@@ -4172,8 +4277,8 @@
       "required": [
         "status"
       ],
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Get ThinAir Data API Key Console Link",
@@ -4235,7 +4340,7 @@
                   "id",
                   "dbType"
                 ],
-                "additionalProperties": true
+                "additionalProperties": {}
               }
             },
             {
@@ -4252,6 +4357,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -4267,7 +4375,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -4328,7 +4436,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -4379,7 +4487,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -4407,7 +4515,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -4425,10 +4533,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -4465,7 +4573,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -4481,7 +4589,10 @@
               ]
             },
             "rowCount": {
-              "$ref": "#/properties/meta/properties/executionTimeMs"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -4521,11 +4632,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "List Connections",
@@ -4546,15 +4657,14 @@
           "description": "SQL query to optimize"
         },
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
       "required": [
         "query"
       ],
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -4585,7 +4695,7 @@
               "required": [
                 "verdict"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             {
               "type": "object",
@@ -4601,6 +4711,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -4616,7 +4729,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -4677,7 +4790,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -4728,7 +4841,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -4756,7 +4869,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -4774,10 +4887,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -4814,7 +4927,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -4830,7 +4943,10 @@
               ]
             },
             "rowCount": {
-              "$ref": "#/properties/meta/properties/executionTimeMs"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -4870,11 +4986,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Optimize Query",
@@ -4890,24 +5006,23 @@
       "type": "object",
       "properties": {
         "max_tables": {
+          "description": "Max tables to sample (default 25, cap 50)",
           "type": "number",
           "minimum": 1,
-          "maximum": 50,
-          "description": "Max tables to sample (default 25, cap 50)"
+          "maximum": 50
         },
         "sample_rows": {
+          "description": "Rows sampled per table (default 20, cap 100; values < 5 are floored to 5)",
           "type": "number",
           "minimum": 1,
-          "maximum": 100,
-          "description": "Rows sampled per table (default 20, cap 100; values < 5 are floored to 5)"
+          "maximum": 100
         },
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -4951,7 +5066,10 @@
                     ]
                   },
                   "sampled_rows": {
-                    "$ref": "#/properties/data/anyOf/0/items/properties/sample_matches"
+                    "type": [
+                      "number",
+                      "string"
+                    ]
                   }
                 },
                 "required": [
@@ -4960,7 +5078,7 @@
                   "kind",
                   "severity"
                 ],
-                "additionalProperties": true
+                "additionalProperties": {}
               }
             },
             {
@@ -4977,6 +5095,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -4992,7 +5113,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -5053,7 +5174,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -5104,7 +5225,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -5132,7 +5253,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -5150,10 +5271,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -5190,7 +5311,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -5200,10 +5321,16 @@
               "type": "string"
             },
             "executionTimeMs": {
-              "$ref": "#/properties/data/anyOf/0/items/properties/sample_matches"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "rowCount": {
-              "$ref": "#/properties/data/anyOf/0/items/properties/sample_matches"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -5243,11 +5370,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "PII Scan",
@@ -5273,44 +5400,43 @@
           "description": "What to do"
         },
         "rule_name": {
+          "description": "Rule name",
           "type": "string",
-          "maxLength": 256,
-          "description": "Rule name"
+          "maxLength": 256
         },
         "pattern": {
+          "description": "Regex pattern to match",
           "type": "string",
-          "maxLength": 2000,
-          "description": "Regex pattern to match"
+          "maxLength": 2000
         },
         "block_action": {
+          "description": "Action when matched (default block)",
           "type": "string",
           "enum": [
             "block",
             "warn",
             "log"
-          ],
-          "description": "Action when matched (default block)"
+          ]
         },
         "message": {
+          "description": "Message shown when rule triggers",
           "type": "string",
-          "maxLength": 500,
-          "description": "Message shown when rule triggers"
+          "maxLength": 500
         },
         "sql": {
+          "description": "SQL to test against rules",
           "type": "string",
-          "maxLength": 50000,
-          "description": "SQL to test against rules"
+          "maxLength": 50000
         },
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
       "required": [
         "action"
       ],
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -5336,7 +5462,7 @@
                     "type": "string"
                   }
                 },
-                "additionalProperties": true
+                "additionalProperties": {}
               }
             },
             {
@@ -5361,7 +5487,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             {
               "type": "object",
@@ -5388,7 +5514,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             {
               "type": "object",
@@ -5404,6 +5530,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -5419,7 +5548,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -5480,7 +5609,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -5531,7 +5660,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -5559,7 +5688,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -5577,10 +5706,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -5617,7 +5746,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -5633,7 +5762,10 @@
               ]
             },
             "rowCount": {
-              "$ref": "#/properties/meta/properties/executionTimeMs"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -5673,11 +5805,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Query Firewall",
@@ -5694,18 +5826,17 @@
       "type": "object",
       "properties": {
         "limit": {
+          "description": "Number of recent queries (default 20, max 100)",
           "type": "number",
           "minimum": 1,
-          "maximum": 100,
-          "description": "Number of recent queries (default 20, max 100)"
+          "maximum": 100
         },
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -5728,7 +5859,10 @@
                     ]
                   },
                   "rows": {
-                    "$ref": "#/properties/data/anyOf/0/items/properties/execution_ms"
+                    "type": [
+                      "number",
+                      "string"
+                    ]
                   },
                   "tool": {
                     "type": "string"
@@ -5747,7 +5881,7 @@
                     ]
                   }
                 },
-                "additionalProperties": true
+                "additionalProperties": {}
               }
             },
             {
@@ -5764,6 +5898,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -5779,7 +5916,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -5840,7 +5977,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -5891,7 +6028,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -5919,7 +6056,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -5937,10 +6074,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -5977,7 +6114,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -5987,10 +6124,16 @@
               "type": "string"
             },
             "executionTimeMs": {
-              "$ref": "#/properties/data/anyOf/0/items/properties/execution_ms"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "rowCount": {
-              "$ref": "#/properties/data/anyOf/0/items/properties/execution_ms"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -6030,11 +6173,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Query History",
@@ -6055,21 +6198,20 @@
           "description": "SQL SELECT query to execute"
         },
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         },
         "limit": {
+          "description": "Max rows to return (default 100, max 1000)",
           "type": "number",
           "minimum": 1,
-          "maximum": 1000,
-          "description": "Max rows to return (default 100, max 1000)"
+          "maximum": 1000
         }
       },
       "required": [
         "query"
       ],
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -6081,6 +6223,9 @@
               "type": "array",
               "items": {
                 "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
                 "additionalProperties": {}
               }
             },
@@ -6098,6 +6243,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -6113,7 +6261,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -6174,7 +6322,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -6225,7 +6373,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -6253,7 +6401,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -6271,10 +6419,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -6311,7 +6459,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -6327,7 +6475,10 @@
               ]
             },
             "rowCount": {
-              "$ref": "#/properties/meta/properties/executionTimeMs"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -6367,7 +6518,7 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "columns": {
           "type": "array",
@@ -6385,12 +6536,12 @@
               "name",
               "type"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Run SQL Query",
@@ -6443,8 +6594,8 @@
         "limit",
         "plan"
       ],
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Check Quota",
@@ -6469,7 +6620,6 @@
       "required": [
         "name"
       ],
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -6494,8 +6644,8 @@
         "status",
         "name"
       ],
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Remove Database Connection",
@@ -6522,49 +6672,48 @@
           "description": "save | run | list | delete"
         },
         "name": {
+          "description": "Query name (save/run/delete)",
           "type": "string",
-          "maxLength": 256,
-          "description": "Query name (save/run/delete)"
+          "maxLength": 256
         },
         "id": {
+          "description": "Query ID (alternative to name for run/delete)",
           "type": "string",
-          "maxLength": 256,
-          "description": "Query ID (alternative to name for run/delete)"
+          "maxLength": 256
         },
         "sql": {
+          "description": "SQL to store (required for action=save)",
           "type": "string",
-          "maxLength": 50000,
-          "description": "SQL to store (required for action=save)"
+          "maxLength": 50000
         },
         "description": {
+          "description": "Freeform description (action=save)",
           "type": "string",
-          "maxLength": 1000,
-          "description": "Freeform description (action=save)"
+          "maxLength": 1000
         },
         "tags": {
+          "description": "Tags (action=save)",
+          "maxItems": 20,
           "type": "array",
           "items": {
             "type": "string",
             "maxLength": 256
-          },
-          "maxItems": 20,
-          "description": "Tags (action=save)"
+          }
         },
         "tag": {
+          "description": "Filter by tag (action=list)",
           "type": "string",
-          "maxLength": 256,
-          "description": "Filter by tag (action=list)"
+          "maxLength": 256
         },
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
       "required": [
         "action"
       ],
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -6599,7 +6748,7 @@
                 "required": [
                   "name"
                 ],
-                "additionalProperties": true
+                "additionalProperties": {}
               }
             },
             {
@@ -6616,7 +6765,7 @@
                 "id",
                 "name"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             {
               "type": "object",
@@ -6628,12 +6777,15 @@
               "required": [
                 "deleted"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             {
               "type": "array",
               "items": {
                 "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
                 "additionalProperties": {}
               }
             },
@@ -6651,6 +6803,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -6666,7 +6821,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -6727,7 +6882,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -6778,7 +6933,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -6806,7 +6961,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -6824,10 +6979,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -6864,7 +7019,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -6874,10 +7029,16 @@
               "type": "string"
             },
             "executionTimeMs": {
-              "$ref": "#/properties/data/anyOf/0/items/properties/runs"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "rowCount": {
-              "$ref": "#/properties/data/anyOf/0/items/properties/runs"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -6917,11 +7078,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Saved Queries",
@@ -6938,12 +7099,11 @@
       "type": "object",
       "properties": {
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -6955,6 +7115,9 @@
               "type": "array",
               "items": {
                 "type": "object",
+                "propertyNames": {
+                  "type": "string"
+                },
                 "additionalProperties": {}
               }
             },
@@ -6972,6 +7135,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -6987,7 +7153,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -7048,7 +7214,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -7099,7 +7265,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -7127,7 +7293,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -7145,10 +7311,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -7185,7 +7351,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -7201,7 +7367,10 @@
               ]
             },
             "rowCount": {
-              "$ref": "#/properties/meta/properties/executionTimeMs"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -7241,11 +7410,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Show Locks",
@@ -7261,17 +7430,16 @@
       "type": "object",
       "properties": {
         "context": {
+          "description": "Topic or goal to focus suggestions",
           "type": "string",
-          "maxLength": 500,
-          "description": "Topic or goal to focus suggestions"
+          "maxLength": 500
         },
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -7298,7 +7466,7 @@
                   "question",
                   "sql"
                 ],
-                "additionalProperties": true
+                "additionalProperties": {}
               }
             },
             {
@@ -7315,6 +7483,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -7330,7 +7501,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -7391,7 +7562,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -7442,7 +7613,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -7470,7 +7641,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -7488,10 +7659,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -7528,7 +7699,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -7544,7 +7715,10 @@
               ]
             },
             "rowCount": {
-              "$ref": "#/properties/meta/properties/executionTimeMs"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -7584,11 +7758,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Suggest Queries",
@@ -7604,12 +7778,11 @@
       "type": "object",
       "properties": {
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -7648,13 +7821,16 @@
                   ]
                 },
                 "total_ms": {
-                  "$ref": "#/properties/data/anyOf/0/properties/ping_ms"
+                  "type": [
+                    "number",
+                    "string"
+                  ]
                 }
               },
               "required": [
                 "ok"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             {
               "type": "object",
@@ -7670,6 +7846,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -7685,7 +7864,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -7746,7 +7925,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -7797,7 +7976,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -7825,7 +8004,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -7843,10 +8022,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -7883,7 +8062,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -7893,10 +8072,16 @@
               "type": "string"
             },
             "executionTimeMs": {
-              "$ref": "#/properties/data/anyOf/0/properties/ping_ms"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "rowCount": {
-              "$ref": "#/properties/data/anyOf/0/properties/ping_ms"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -7936,11 +8121,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Test Connection",
@@ -7961,25 +8146,24 @@
           "description": "Table to monitor"
         },
         "condition": {
+          "description": "What to watch: 'new rows', 'row count drops'",
           "type": "string",
-          "maxLength": 256,
-          "description": "What to watch: 'new rows', 'row count drops'"
+          "maxLength": 256
         },
         "column": {
+          "description": "Date column to track latest",
           "type": "string",
-          "maxLength": 256,
-          "description": "Date column to track latest"
+          "maxLength": 256
         },
         "connection": {
+          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output.",
           "type": "string",
-          "maxLength": 256,
-          "description": "Target connection name from this tenant's inventory. Call `list_connections` to see every name + dialect, then match semantically to the user's intent (e.g. 'analytics' → a connection named `*-analytics-*`; 'prod' → a connection with `prod-` prefix). If the user didn't specify, use the tenant's default (first added). Do not invent names — resolve from `list_connections` output."
+          "maxLength": 256
         }
       },
       "required": [
         "table"
       ],
-      "additionalProperties": false,
       "$schema": "http://json-schema.org/draft-07/schema#"
     },
     "outputSchema": {
@@ -8013,7 +8197,7 @@
               "required": [
                 "table"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             {
               "type": "object",
@@ -8029,6 +8213,9 @@
                 },
                 "details": {
                   "type": "object",
+                  "propertyNames": {
+                    "type": "string"
+                  },
                   "additionalProperties": {}
                 },
                 "retry_after_s": {
@@ -8044,7 +8231,7 @@
               "required": [
                 "error"
               ],
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           ]
         },
@@ -8105,7 +8292,7 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "metric": {
               "type": "object",
@@ -8156,7 +8343,7 @@
                   ]
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "code": {
               "type": "object",
@@ -8184,7 +8371,7 @@
                   "type": "boolean"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             },
             "map": {
               "type": "object",
@@ -8202,10 +8389,10 @@
                   "type": "string"
                 }
               },
-              "additionalProperties": true
+              "additionalProperties": {}
             }
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         },
         "summary": {
           "type": "string"
@@ -8242,7 +8429,7 @@
               "severity",
               "message"
             ],
-            "additionalProperties": true
+            "additionalProperties": {}
           }
         },
         "meta": {
@@ -8252,10 +8439,16 @@
               "type": "string"
             },
             "executionTimeMs": {
-              "$ref": "#/properties/data/anyOf/0/properties/current_count"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "rowCount": {
-              "$ref": "#/properties/data/anyOf/0/properties/current_count"
+              "type": [
+                "number",
+                "string"
+              ]
             },
             "truncated": {
               "type": "boolean"
@@ -8295,11 +8488,11 @@
             },
             "plan": {}
           },
-          "additionalProperties": true
+          "additionalProperties": {}
         }
       },
-      "additionalProperties": true,
-      "$schema": "http://json-schema.org/draft-07/schema#"
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "additionalProperties": {}
     },
     "annotations": {
       "title": "Watch Table",
