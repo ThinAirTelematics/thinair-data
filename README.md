@@ -68,12 +68,12 @@ keyless, or `Authorization: Bearer`).
 |------|------|-------------|
 | `list_connections` | discover | List connected databases with names + dialects |
 | `describe_schema` | discover | Introspect tables, columns, types, primary keys, and indexes for a connection (foreign keys are not reported; MySQL indexes not yet) |
-| `query_sql` | discover | Execute a parameterized read-only SQL query |
+| `query_sql` | discover | Execute a read-only SQL query (SELECT / WITH / EXPLAIN only) |
 | `query_history` | build | Recent queries with timing, row counts, status |
 | `data_profile` | build | Distributions, null rates, cardinality on a table |
 | `cross_db_query` | architect | Run the same query across 2–4 connections (regional/dialect compare) |
-| `detect_anomalies` | discover | Statistical outliers in row growth, latency, value distributions |
-| `pii_scan` | build | Scan a table for PII patterns (SSN, email, phone, credit card) |
+| `detect_anomalies` | discover | Volume drops/spikes, data gaps, value concentration, null rates, stale data |
+| `pii_scan` | build | Heuristic sweep of string columns across tables for PII patterns (email, SSN, card, phone, JWT, bearer token) |
 | `find_n_plus_one` | architect | Identify N+1 query patterns in `query_history` |
 | `query_firewall` | architect | Per-connection custom-block rules (deny specific tables/queries) |
 
@@ -106,7 +106,7 @@ The OAuth flow completes at first use — no manual token setup required. After 
     "thinair-data": {
       "url": "https://data.thinair.co/mcp",
       "headers": {
-        "Authorization": "Bearer ta_live_..."
+        "Authorization": "Bearer ta_data_..."
       }
     }
   }
@@ -141,7 +141,7 @@ Once connected, ask your AI:
 
 - *"Show me all rows that haven’t updated in the last 24 hours across staging and prod"*
 - *"What are the top 10 slowest queries this week?"*
-- *"Scan the customers table for PII patterns"*
+- *"Scan my database for PII patterns"*
 - *"Which tables have the most N+1 query exposure?"*
 
 ## Not for secrets

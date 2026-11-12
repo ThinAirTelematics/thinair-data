@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "co.thinair/data",
-  "description": "PostgreSQL, MySQL, and SQL Server in one session. 26 read-only MCP tools for AI agents.",
+  "description": "PostgreSQL, MySQL, and SQL Server in one session. 26 MCP tools for read-only database access by AI agents.",
   "websiteUrl": "https://data.thinair.co",
   "version": "2.2.2",
   "remotes": [
@@ -11,7 +11,7 @@
       "headers": [
         {
           "name": "Authorization",
-          "description": "Optional. Most clients (Claude Desktop, Cursor, Windsurf, etc.) complete OAuth at first use — no token paste required. For non-OAuth clients, paste `Bearer ta_live_...`; get a key at https://data.thinair.co/connect. Database connections are added per-tenant via the `add_connection` MCP tool *after* sign-in — never as an env var or at install time.",
+          "description": "Optional. Most clients (Claude Desktop, Cursor, Windsurf, etc.) complete OAuth at first use — no token paste required. For non-OAuth clients, paste `Bearer ta_data_...`; get a key at https://data.thinair.co/connect. Database connections are added per-tenant via the `add_connection` MCP tool *after* sign-in — never as an env var or at install time.",
           "isRequired": false,
           "isSecret": true
         }

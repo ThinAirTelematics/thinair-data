@@ -1,14 +1,12 @@
 #!/usr/bin/env node
 // @thinairtelematics/data — remote hosted MCP server shim.
 // No local server process. Prints your mcp.json config block.
-// Usage: npx @thinairtelematics/data [--api-key <key>] [--transport sse]
+// Usage: npx @thinairtelematics/data [--api-key <key>]
 
 const args = process.argv.slice(2);
 const keyFlag = args.indexOf('--api-key');
 const apiKey = keyFlag !== -1 ? args[keyFlag + 1] : null;
-const useSSE = args.includes('--transport') && args[args.indexOf('--transport') + 1] === 'sse';
-
-const url = useSSE ? 'https://data.thinair.co/sse' : 'https://data.thinair.co/mcp';
+const url = 'https://data.thinair.co/mcp';
 
 const keylessConfig = {
   mcpServers: {
